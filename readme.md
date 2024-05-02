@@ -1,7 +1,7 @@
 
-# Goal
+# Goal  
 
-- A trader needs to decide how many options on SPY and XLE to buy/sell for different strikes 
+- A trader needs to decide how many options on SPY and XLE to buy/sell for different strikes  
 
 - All options maturities is assumed to be the same, say 1 week, or 1 day, and such period represents the length of the time step
 
