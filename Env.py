@@ -6,7 +6,7 @@ from gymnasium.spaces import Box
 
 class BenchmarkReplication(gym.Env):
 
-    def __init__(self, W: float, N: int, Dynamics: str, start_time = 0, T: float = 26, dT: float = 1, r: float = 0, *kwargs):
+    def __init__(self, W: float = 100, N: int = 10, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, *kwargs):
 
         self.start_time = start_time
         self.T = T
