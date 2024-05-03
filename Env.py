@@ -6,8 +6,7 @@ from gymnasium.spaces import Box
 
 class BenchmarkReplication(gym.Env):
 
-    def __init__(self, W: float = 100, N: int = 10, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, *kwargs):
-
+    def __init__(self, W: float = 100, N: int = 10, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
         self.start_time = start_time
         self.T = T
         self.dT = dT
@@ -18,12 +17,18 @@ class BenchmarkReplication(gym.Env):
         
         self.Dynamics = Dynamics
         self.S0 = [500,25]
-        self.sigma = kwargs.get('sigma',None)
-        self.mu = kwargs.get('mu',None)
-        self.bp = kwargs.get('bp',None)
-        self.cp = kwargs.get('cp',None)
-        self.bn = kwargs.get('bn',None)
-        self.cn = kwargs.get('cn',None)
+        self.sigma = sigma
+        self.mu = mu
+        self.bp = [0.1,0.1]
+        self.bn = [0.05,0.05]
+        self.cp = [0.1,0.1]
+        self.cn = [0.05,0.05]
+        # self.sigma = kwargs.get('sigma',None)
+        # self.mu = kwargs.get('mu',None)
+        # self.bp = kwargs.get('bp',None)
+        # self.cp = kwargs.get('cp',None)
+        # self.bn = kwargs.get('bn',None)
+        # self.cn = kwargs.get('cn',None)
 
         self.action_spaces = Box(low = -np.inf, high = np.inf, shape = (4,N))
         self.observation_space = Box(low = -np.inf, high = np.inf, shape = (2,)), # current prices of 2 underlying assets
