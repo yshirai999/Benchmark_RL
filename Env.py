@@ -45,10 +45,9 @@ class BenchmarkReplication(gym.Env):
             self.truncated = True
 
         if not all([self.terminated, self.truncated]):
-            S = np.array(self.time_series[:][self.time])
+            S = self.time_series[:][self.time]
             kmin = [0.7*S[i] for i in range(len(S))]
             kmax = [1.3*S[i] for i in range(len(S))]
-            print(kmin,kmax)
             k0 = np.linspace(kmin[0],kmax[0],N)
             k1 = np.linspace(kmin[1],kmax[1],N)
             if self.Dynamics == 'BS':
@@ -62,10 +61,10 @@ class BenchmarkReplication(gym.Env):
             self.W = 0
             for n in range(N):
                 self.W = self.W \
-                        + action[0][n]*max(S[0] - self.k0[n],0) \
-                        + action[1][n]*max(self.k0[n] - S[0],0) \
-                        + action[2][n]*max(self.k1[n] - S[1],0) \
-                        + action[3][n]*max(S[1] - self.k1[n],0) 
+                        + action[0][n]*max(S[0] - k0[n],0) \
+                        + action[1][n]*max(k0[n] - S[0],0) \
+                        + action[2][n]*max(k1[n] - S[1],0) \
+                        + action[3][n]*max(S[1] - k1[n],0) 
 
             self.reward = self.W - S[0]*S[0]/sum(S) - S[1]*S[1]/sum(S) #The benchmark formed by SPY and XLE is subtracted
             self.time += 1
@@ -89,7 +88,7 @@ class BenchmarkReplication(gym.Env):
         
         self.time_series = [[self.S0[0]*np.exp(sum(eps0[:i])), self.S0[1]*np.exp(sum(eps1[:i]))] for i in range(T)]
 
-        S = np.array(self.time_series[:][0])
+        S = self.time_series[:][0]
 
         self.terminated = False
         self.truncated = False

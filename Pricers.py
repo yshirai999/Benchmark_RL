@@ -1,21 +1,21 @@
 import numpy as np
 import scipy as sp
 
-def BSprice(S: np.ndarray, k0: np.ndarray, k1: np.ndarray, r: float, T: float, sigma: float) -> list[np.ndarray]:
+def BSprice(S: list[float], k0: np.ndarray, k1: np.ndarray, r: float, T: float, sigma: float) -> list[np.ndarray]:
 
-    d1 = ( np.log(k0/S[0]) + 0.5*sigma*sigma*np.sqrt(T) ) / sigma*np.sqrt(T)
-    d2 = d1 - sigma*np.sqrt(T)
-    C0 = sp.norm.cdf(d1)*S[0]-sp.norm.cdf(d2)*k0*np.exp(-r*T)
+    d1 = ( np.log(k0/S[0]) + 0.5*sigma[0]*sigma[0]*np.sqrt(T) ) / sigma[0]*np.sqrt(T)
+    d2 = d1 - sigma[0]*np.sqrt(T)
+    C0 = sp.stats.norm.cdf(d1)*S[0]-sp.stats.norm.cdf(d2)*k0*np.exp(-r*T)
     P0 = C0 - S[0] + k0*np.exp(-r*T)
 
-    d1 = ( np.log(k1/S[1]) + 0.5*sigma*sigma*np.sqrt(T) ) / sigma*np.sqrt(T)
-    d2 = d1 - sigma*np.sqrt(T)
-    C1 = sp.norm.cdf(d1)*S[1]-sp.norm.cdf(d2)*k1*np.exp(-r*T) 
+    d1 = ( np.log(k1/S[1]) + 0.5*sigma[1]*sigma[1]*np.sqrt(T) ) / sigma[1]*np.sqrt(T)
+    d2 = d1 - sigma[1]*np.sqrt(T)
+    C1 = sp.stats.norm.cdf(d1)*S[1]-sp.stats.norm.cdf(d2)*k1*np.exp(-r*T) 
     P1 = C1 - S[1] + k1*np.exp(-r*T)
 
     return [C0, P0, C1, P1]
 
-def BGprice(S: np.ndarray, k0: np.ndarray, k1: np.ndarray, r: float, T: float, \
+def BGprice(S: list[float], k0: np.ndarray, k1: np.ndarray, r: float, T: float, \
             alpha: float, lam: float, eta: float, N: int, \
              bp: float, cp: float, bn: float, cn: float) -> list[np.ndarray]:
     beta = np.log(S[0])-lam*N/2
