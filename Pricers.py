@@ -1,7 +1,7 @@
 import numpy as np
 import scipy as sp
 
-def BSprice(S: list[float], k0: np.ndarray, k1: np.ndarray, r: float, T: float, sigma: float) -> list[np.ndarray]:
+def BSprice(S: np.ndarray, k0: np.ndarray, k1: np.ndarray, r: float, T: float, sigma: float) -> list[np.ndarray]:
 
     d1 = ( np.log(k0/S[0]) + 0.5*sigma*sigma*np.sqrt(T) ) / sigma*np.sqrt(T)
     d2 = d1 - sigma*np.sqrt(T)
@@ -15,7 +15,7 @@ def BSprice(S: list[float], k0: np.ndarray, k1: np.ndarray, r: float, T: float, 
 
     return [C0, P0, C1, P1]
 
-def BGprice(S: list[float], k0: np.ndarray, k1: np.ndarray, r: float, T: float, \
+def BGprice(S: np.ndarray, k0: np.ndarray, k1: np.ndarray, r: float, T: float, \
             alpha: float, lam: float, eta: float, N: int, \
              bp: float, cp: float, bn: float, cn: float) -> list[np.ndarray]:
     beta = np.log(S[0])-lam*N/2
