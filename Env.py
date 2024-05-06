@@ -24,12 +24,6 @@ class BenchmarkReplication(gym.Env):
         self.bn = [0.05,0.05]
         self.cp = [0.1,0.1]
         self.cn = [0.05,0.05]
-        # self.sigma = kwargs.get('sigma',None)
-        # self.mu = kwargs.get('mu',None)
-        # self.bp = kwargs.get('bp',None)
-        # self.cp = kwargs.get('cp',None)
-        # self.bn = kwargs.get('bn',None)
-        # self.cn = kwargs.get('cn',None)
 
         self.action_space = Box(low = -np.inf, high = np.inf, shape = (4,N))
         self.observation_space = Box(low = -np.inf, high = np.inf, shape = (2,)), # current prices of 2 underlying assets
