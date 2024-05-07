@@ -3,6 +3,7 @@ import scipy as sp
 from Pricers import BSprice, BGprice
 import gymnasium as gym
 from gymnasium.spaces import Box
+from typing import TYPE_CHECKING, Optional
 
 class BenchmarkReplication(gym.Env):
 
@@ -25,8 +26,10 @@ class BenchmarkReplication(gym.Env):
         self.cp = [0.1,0.1]
         self.cn = [0.05,0.05]
 
-        self.action_space = Box(low = -np.inf, high = np.inf, shape = (4,N))
-        self.observation_space = Box(low = -np.inf, high = np.inf, shape = (2,)), # current prices of 2 underlying assets
+        self.action_space = Box(low = -100, high = 100, shape = (4,N))
+        self.action_space = self.action_space
+        self.observation_space = Box(low = 0, high = 100, shape = (2,1)), # current prices of 2 underlying assets
+        self.observation_space = self.observation_space[0]
         
     def step(self, action):
         T = self.T
@@ -64,10 +67,15 @@ class BenchmarkReplication(gym.Env):
             self.time += 1
         
         info = {}
+        obs = S
+        obs = np.array([[obs[i] for i in range(len(S))]])
 
-        return S, self.reward, self.terminated, self.truncated, info
+        return obs, self.reward, self.terminated, self.truncated, info
         
-    def reset(self):
+    def reset(
+        self, *, seed: Optional[int] = None
+    ):
+        super().reset(seed=seed)
         T = self.T
         N = self.N
         self.time = self.start_time # the current time is zero
@@ -82,14 +90,15 @@ class BenchmarkReplication(gym.Env):
         
         self.time_series = [[self.S0[0]*np.exp(sum(eps0[:i])), self.S0[1]*np.exp(sum(eps1[:i]))] for i in range(T)]
 
-        S = self.time_series[:][0]
+        obs = self.time_series[:][0]
+        obs = np.array([[obs[i] for i in range(len(obs))]])
 
         self.terminated = False
         self.truncated = False
 
         info = {}
 
-        return S, self.reward, self.terminated, self.truncated, info
+        return obs, self.reward, self.terminated, self.truncated, info
 
     def render(self):
         pass
