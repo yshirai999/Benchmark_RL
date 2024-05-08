@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Optional
 
 class BenchmarkReplication(gym.Env):
 
-    def __init__(self, W: float = 100, N: int = 10, Nsim: int = 1000, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
+    def __init__(self, W: float = 100, N: int = 10, Nsim: int = 100, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
         self.start_time = start_time
         self.T = T
         self.dT = dT
@@ -79,6 +79,7 @@ class BenchmarkReplication(gym.Env):
                         + action[3][n]*max(S[1] - k1[n],0) 
 
             self.reward = - Var(S,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
+            #self.reward = self.W - S[0]*S[0]/sum(S) - S[1]*S[1]/sum(S) #The benchmark formed by SPY and XLE is subtracted
 
             self.time += 1
         
