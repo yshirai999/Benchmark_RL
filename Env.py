@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Optional
 
 class BenchmarkReplication(gym.Env):
 
-    def __init__(self, W: float = 100, N: int = 10, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
+    def __init__(self, W: float = 100, N: int = 10, Nsim: int = 1000, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
         self.start_time = start_time
         self.T = T
         self.dT = dT
@@ -33,13 +33,10 @@ class BenchmarkReplication(gym.Env):
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
         self.observation_space = self.observation_space[0]
 
-        self.np_random = 42 #For MC integration
-
+        np.random.seed(9001) #For MC integration
+        self.Nsim = Nsim
         if self.Dynamics == 'BS':
-            X0 = self.dT*[self.mu[0]+self.sigma[0]*self.np.random.randn(1) for i in range(T)]
-            X1 = self.dT*[self.mu[1]+self.sigma[1]*self.np.random.randn(1) for i in range(T)]
-        
-        X = np.array([X0,X1])
+            self.X = np.array(self.dT*[self.mu+self.sigma*np.random.randn(2) for i in range(Nsim)])
         
 
     
@@ -81,7 +78,8 @@ class BenchmarkReplication(gym.Env):
                         + action[2][n]*max(k1[n] - S[1],0) \
                         + action[3][n]*max(S[1] - k1[n],0) 
 
-            self.reward = - Var(S,action,k0,k1,self.mu,self.sigma,self.X,self.W0)
+            self.reward = - Var(S,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
+
             self.time += 1
         
         info = {}
@@ -103,13 +101,10 @@ class BenchmarkReplication(gym.Env):
         self.p = np.zeros(4*N) # current position in each option
         
         if self.Dynamics == 'BS':
-            eps0 = self.dT*[self.mu[0]+self.sigma[0]*self.np.random.randn(1) for i in range(T)]
-            eps1 = self.dT*[self.mu[1]+self.sigma[1]*self.np.random.randn(1) for i in range(T)]
+            eps0 = self.dT*[self.np_random.normal(self.mu[0],self.sigma[0]) for i in range(T)]
+            eps1 = self.dT*[self.np_random.normal(self.mu[1],self.sigma[1]) for i in range(T)]
         
         self.ts = [[self.S0[0]*np.exp(sum(eps0[:i])), self.S0[1]*np.exp(sum(eps1[:i]))] for i in range(T)]
-
-        self.ts = [[self.ts[i][0][0], self.ts[i][1][0]] for i in range(1,len(self.ts))]
-        self.ts.insert(0, self.ts[0][:])
 
         S = self.ts[:][0]
         obs = np.array([[S[i]] for i in range(len(S))])
