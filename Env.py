@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Optional
 
 class BenchmarkReplication(gym.Env):
 
-    def __init__(self, W: float = 100, N: int = 10, Nsim: int = 100, Dynamics: str = 'BS', start_time: float = 0, T: float = 26, dT: float = 1, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
+    def __init__(self, W: float = 100, N: int = 10, Nsim: int = 100, Dynamics: str = 'BS', start_time: float = 0, T: float = 0.5, dT: float = 0.5/52, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
         self.start_time = start_time
         self.T = T
         self.dT = dT
@@ -28,7 +28,7 @@ class BenchmarkReplication(gym.Env):
         self.cp = [0.1,0.1]
         self.cn = [0.05,0.05]
 
-        self.action_space = Box(low = -100, high = 100, shape = (4,N))
+        self.action_space = Box(low = -10, high = 10, shape = (4,N))
         self.action_space = self.action_space
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
         self.observation_space = self.observation_space[0]
@@ -78,7 +78,7 @@ class BenchmarkReplication(gym.Env):
                         + action[2][n]*max(k1[n] - S[1],0) \
                         + action[3][n]*max(S[1] - k1[n],0) 
 
-            self.reward = - Var(S,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
+            self.reward = - Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
             #self.reward = self.W - S[0]*S[0]/sum(S) - S[1]*S[1]/sum(S) #The benchmark formed by SPY and XLE is subtracted
 
             self.time += 1
