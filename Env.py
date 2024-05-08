@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.random import PCG64DXSM, Generator
 import scipy as sp
 from Pricers import BSprice, BGprice
 import gymnasium as gym
@@ -28,9 +29,12 @@ class BenchmarkReplication(gym.Env):
 
         self.action_space = Box(low = -100, high = 100, shape = (4,N))
         self.action_space = self.action_space
-        self.observation_space = Box(low = 0, high = 100, shape = (2,1)), # current prices of 2 underlying assets
+        self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
         self.observation_space = self.observation_space[0]
-        
+    
+    def seed(self, seed:int) -> None:
+        self.np_random = Generator(PCG64DXSM(seed=seed))
+
     def step(self, action):
         T = self.T
         N = self.N
@@ -42,7 +46,7 @@ class BenchmarkReplication(gym.Env):
             self.truncated = True
 
         if not all([self.terminated, self.truncated]):
-            S = self.time_series[:][self.time]
+            S = self.ts[:][self.time]
             kmin = [0.7*S[i] for i in range(len(S))]
             kmax = [1.3*S[i] for i in range(len(S))]
             k0 = np.linspace(kmin[0],kmax[0],N)
@@ -67,15 +71,15 @@ class BenchmarkReplication(gym.Env):
             self.time += 1
         
         info = {}
-        obs = S
-        obs = np.array([[obs[i] for i in range(len(S))]])
+        obs = np.array([[S[i]] for i in range(len(S))])
 
         return obs, self.reward, self.terminated, self.truncated, info
         
     def reset(
-        self, *, seed: Optional[int] = None
+        self,
+        *,
+        seed: Optional[int] = None
     ):
-        super().reset(seed=seed)
         T = self.T
         N = self.N
         self.time = self.start_time # the current time is zero
@@ -88,17 +92,20 @@ class BenchmarkReplication(gym.Env):
             eps0 = self.dT*[self.mu[0]+self.sigma[0]*np.random.randn(1) for i in range(T)]
             eps1 = self.dT*[self.mu[1]+self.sigma[1]*np.random.randn(1) for i in range(T)]
         
-        self.time_series = [[self.S0[0]*np.exp(sum(eps0[:i])), self.S0[1]*np.exp(sum(eps1[:i]))] for i in range(T)]
+        self.ts = [[self.S0[0]*np.exp(sum(eps0[:i])), self.S0[1]*np.exp(sum(eps1[:i]))] for i in range(T)]
 
-        obs = self.time_series[:][0]
-        obs = np.array([[obs[i] for i in range(len(obs))]])
+        self.ts = [[self.ts[i][0][0], self.ts[i][1][0]] for i in range(1,len(self.ts))]
+        self.ts.insert(0, self.ts[0][:])
+
+        S = self.ts[:][0]
+        obs = np.array([[S[i]] for i in range(len(S))])
 
         self.terminated = False
         self.truncated = False
 
         info = {}
 
-        return obs, self.reward, self.terminated, self.truncated, info
+        return obs, info
 
     def render(self):
         pass
