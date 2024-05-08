@@ -32,9 +32,19 @@ class BenchmarkReplication(gym.Env):
         self.action_space = self.action_space
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
         self.observation_space = self.observation_space[0]
+
+        self.np_random = 42 #For MC integration
+
+        if self.Dynamics == 'BS':
+            X0 = self.dT*[self.mu[0]+self.sigma[0]*self.np.random.randn(1) for i in range(T)]
+            X1 = self.dT*[self.mu[1]+self.sigma[1]*self.np.random.randn(1) for i in range(T)]
+        
+        X = np.array([X0,X1])
+        
+
     
     def seed(self, seed:int) -> None:
-        self.np_random = Generator(PCG64DXSM(seed=seed))
+        self.np_random = Generator(PCG64DXSM(seed=seed)) #For ts creation
 
     def step(
         self,
@@ -60,7 +70,7 @@ class BenchmarkReplication(gym.Env):
             else:
                 O = BGprice(S,k0,k1,self.r,self.dT,self.sigma)
             
-            Cost = sum([np.dot(action[i],O[i]) for i in range(4)])-action[3][-1]*O[3][-1]
+            Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[3][-1]*O[3][-1]
             action[3][-1] = self.W - Cost
 
             self.W = 0
@@ -71,7 +81,7 @@ class BenchmarkReplication(gym.Env):
                         + action[2][n]*max(k1[n] - S[1],0) \
                         + action[3][n]*max(S[1] - k1[n],0) 
 
-            self.reward = self.W - S[0]*S[0]/sum(S) - S[1]*S[1]/sum(S) #The benchmark formed by SPY and XLE is subtracted
+            self.reward = - Var(S,action,k0,k1,self.mu,self.sigma,self.X,self.W0)
             self.time += 1
         
         info = {}
@@ -93,8 +103,8 @@ class BenchmarkReplication(gym.Env):
         self.p = np.zeros(4*N) # current position in each option
         
         if self.Dynamics == 'BS':
-            eps0 = self.dT*[self.mu[0]+self.sigma[0]*np.random.randn(1) for i in range(T)]
-            eps1 = self.dT*[self.mu[1]+self.sigma[1]*np.random.randn(1) for i in range(T)]
+            eps0 = self.dT*[self.mu[0]+self.sigma[0]*self.np.random.randn(1) for i in range(T)]
+            eps1 = self.dT*[self.mu[1]+self.sigma[1]*self.np.random.randn(1) for i in range(T)]
         
         self.ts = [[self.S0[0]*np.exp(sum(eps0[:i])), self.S0[1]*np.exp(sum(eps1[:i]))] for i in range(T)]
 
