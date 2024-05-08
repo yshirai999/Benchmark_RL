@@ -35,7 +35,10 @@ class BenchmarkReplication(gym.Env):
     def seed(self, seed:int) -> None:
         self.np_random = Generator(PCG64DXSM(seed=seed))
 
-    def step(self, action):
+    def step(
+        self,
+        action
+    ):
         T = self.T
         N = self.N
 
