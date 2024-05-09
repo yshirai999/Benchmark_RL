@@ -1,3 +1,5 @@
+### To run this file, input & C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BenchEnv/python.exe c:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/Main.py in the terminal
+
 from Env import BenchmarkReplication
 import gymnasium as gym
 from stable_baselines3 import PPO
@@ -12,7 +14,7 @@ Benv = BenchmarkReplication(W = 1, N = 10, Nsim = 100, Dynamics = 'BS', start_ti
 #check_env(Benv) #check environment is accepted by SB3
 Benv.seed(seed=random.seed(10))
 
-steps = 10000
+steps = 50000
 
 try:
     path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_{str(steps)}.zip"
@@ -27,7 +29,7 @@ except:
         os.makedirs(path)
     model.save(path)
 
-Nepisodes = 100
+Nepisodes = 1000
 rew = []
 
 vec_env = model.get_env()
