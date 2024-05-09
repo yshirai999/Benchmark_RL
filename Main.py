@@ -25,16 +25,16 @@ Benv.seed(seed=random.seed(10))
 steps = 100000
 
 try:
-    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_{str(steps)}.zip"
+    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models/BS_PPO_{str(steps)}"
     model = PPO.load(path, env = DummyVecEnv([lambda: Benv]), print_system_info=True)
-    print("Existing model loaded")
 except:
     print("Training model...")
     model = PPO('MlpPolicy', DummyVecEnv([lambda: Benv]), learning_rate=0.001, verbose=1)
     model.learn(total_timesteps=steps)
-    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_{str(steps)}"
+    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models"
     if not os.path.exists(path):
         os.makedirs(path)
+    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models/BS_PPO_{str(steps)}"
     model.save(path)
 
 ##########################################
