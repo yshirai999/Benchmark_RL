@@ -77,9 +77,7 @@ class BenchmarkReplication(gym.Env):
                         + action[1][n]*max(k0[n] - S[0],0) \
                         + action[2][n]*max(k1[n] - S[1],0) \
                         + action[3][n]*max(S[1] - k1[n],0) 
-            #print('Wealth = ', self.W,max(action[0]),max(action[1]),max(action[2]),max(action[3]))
             self.reward = - Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
-            #self.reward = self.W - S[0]*S[0]/sum(S) - S[1]*S[1]/sum(S) #The benchmark formed by SPY and XLE is subtracted
 
             self.time += 1
         

@@ -14,5 +14,4 @@ def Var(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0: np.ndar
         x.append(xn)
     mu_sim = np.mean(x)
     sigma_sim = np.mean([(x[i]-mu_sim)**2 for i in range(nsim)])
-    #print(Snew, - W0*(Snew[0]**2+Snew[1]**2)/(Snew[0]+Snew[1]), sigma_sim)
     return sigma_sim
