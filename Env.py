@@ -28,7 +28,7 @@ class BenchmarkReplication(gym.Env):
         self.cp = [0.1,0.1]
         self.cn = [0.05,0.05]
 
-        self.action_space = Box(low = -10, high = 10, shape = (4,N))
+        self.action_space = Box(low = -100, high = 100, shape = (4,N))
         self.action_space = self.action_space
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
         self.observation_space = self.observation_space[0]
@@ -66,7 +66,7 @@ class BenchmarkReplication(gym.Env):
                 O = BSprice(S,k0,k1,self.r,self.dT,self.sigma)
             else:
                 O = BGprice(S,k0,k1,self.r,self.dT,self.bp,self.cp,self.bn,self.cn)
-            
+
             Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[3][-1]*O[3][-1]
             action[3][-1] = self.W - Cost
 
@@ -77,7 +77,7 @@ class BenchmarkReplication(gym.Env):
                         + action[1][n]*max(k0[n] - S[0],0) \
                         + action[2][n]*max(k1[n] - S[1],0) \
                         + action[3][n]*max(S[1] - k1[n],0) 
-            print('Wealth = ', self.W)
+            #print('Wealth = ', self.W,max(action[0]),max(action[1]),max(action[2]),max(action[3]))
             self.reward = - Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
             #self.reward = self.W - S[0]*S[0]/sum(S) - S[1]*S[1]/sum(S) #The benchmark formed by SPY and XLE is subtracted
 

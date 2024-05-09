@@ -12,7 +12,6 @@ def BSprice(S: list[float], k0: np.ndarray, k1: np.ndarray, r: float, T: float, 
     d2 = d1 - sigma[1]*np.sqrt(T)
     C1 = sp.stats.norm.cdf(d1)*S[1]-sp.stats.norm.cdf(d2)*k1*np.exp(-r*T) 
     P1 = C1 - S[1] + k1*np.exp(-r*T)
-
     return [C0, P0, C1, P1]
 
 def BGprice(S: list[float], k0: np.ndarray, k1: np.ndarray, r: float, T: float, \
