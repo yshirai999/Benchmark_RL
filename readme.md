@@ -8,7 +8,7 @@
 - The goal is to replicate or maybe even outperform a benchmark composed of SPY (denoted by $X$) and XLE (denoted by $Y$)
 
 - Specifically, we want to replicate with options on $X$ and $Y$ the payoff
-\begin{align*}
+$\begin{align*}
 \xi(X,Y) = \frac{n_XX}{n_XX+n_YY}X+\frac{n_YY}{n_XX+n_YY}Y
 \end{align*}$
 where $n_X$ and $n_Y$ are the numbers of shares outstanding for $X$ and $Y$ respectively
