@@ -13,7 +13,7 @@ Benv = BenchmarkReplication(W = 100, N = 10, Nsim = 100, Dynamics = 'BS', start_
 #check_env(Benv) #check environment is accepted by SB3
 Benv.seed(seed=random.seed(10))
 
-steps = 100000
+steps = 1000
 try:
     path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_{str(steps)}.zip"
     model = PPO.load(path, env = DummyVecEnv([lambda: Benv]), print_system_info=True)
@@ -29,18 +29,23 @@ except:
 
 Nepisodes = 1
 rew = []
-vec_env = model.get_env()
+#vec_env = model.get_env()
 for i in range(Nepisodes):
-    obs = vec_env.reset()
+    #obs = vec_env.reset()
+    obs = Benv.reset()
     cont = True
     i = 0
     while cont:
-        action = model.predict(obs)
-        obs, reward, terminated, truncated = vec_env.step(action[0])
+        #action = model.predict(obs)
+        action = Benv.action_space.sample()
+        #obs, reward, terminated, truncated = vec_env.step(action[0])
+        obs, reward, terminated, truncated, info = Benv.step(action)
         i += 1
         if any([terminated,truncated]):
             cont = False
             rew.append(reward)
+        if i == 50:
+            cont = False
 
 print(np.mean(rew))
 

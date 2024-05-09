@@ -12,12 +12,12 @@ Benv = BenchmarkReplication(W = 100, N = 10, Nsim = 100, Dynamics = 'BS', start_
 Benv.seed(seed=random.seed(10))
 model = PPO('MlpPolicy', DummyVecEnv([lambda: Benv]), learning_rate=0.001, verbose=1)
 
-steps = 100000
-try:
-    model.load("BS_PPO_"+str(steps))
-except:
-    model.learn(total_timesteps=steps)
-    model.save("BS_PPO_"+str(steps))
+steps = 1000
+# try:
+#     model.load("BS_PPO_"+str(steps))
+# except:
+#     model.learn(total_timesteps=steps)
+#     model.save("BS_PPO_"+str(steps))
 
 Nepisodes = 1
 rew = []
@@ -27,7 +27,8 @@ for i in range(Nepisodes):
     cont = True
     i = 0
     while cont:
-        action = model.predict(obs)
+        #action = model.predict(obs)
+        action = Benv.action_space.sample()
         obs, reward, terminated, truncated = vec_env.step(action[0])
         i += 1
         if any([terminated,truncated]):
