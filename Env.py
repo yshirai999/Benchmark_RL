@@ -29,7 +29,6 @@ class BenchmarkReplication(gym.Env):
         self.cn = [0.05,0.05]
 
         self.action_space = Box(low = -100, high = 100, shape = (4,N))
-        self.action_space = self.action_space
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
         self.observation_space = self.observation_space[0]
 
@@ -38,7 +37,6 @@ class BenchmarkReplication(gym.Env):
         if self.Dynamics == 'BS':
             self.X = np.array(self.dT*[self.mu+self.sigma*np.random.randn(2) for i in range(Nsim)])
         
-
     
     def seed(self, seed:int) -> None:
         self.np_random = Generator(PCG64DXSM(seed=seed)) #For ts creation
