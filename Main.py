@@ -1,7 +1,8 @@
 ##########################################
 ### To run this file: & PYTHONPATH PATH
-### PYTHONPATH is path to python in conda
-### PATH is this python file path
+### PYTHONPATH is the path to python.exe
+### in the BencEnv conda environment
+### PATH is this python file's path
 ##########################################
 ### Libraries
 ##########################################
