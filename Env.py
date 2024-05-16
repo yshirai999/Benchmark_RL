@@ -2,7 +2,7 @@ import numpy as np
 from numpy.random import PCG64DXSM, Generator
 import scipy as sp
 from Pricers import BSprice, BGprice
-from MUFs import Var
+from MUFs import Var, EffVar
 import gymnasium as gym
 from gymnasium.spaces import Box
 from typing import TYPE_CHECKING, Optional

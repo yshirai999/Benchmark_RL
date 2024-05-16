@@ -14,3 +14,7 @@ def Var(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0: np.ndar
     mu_sim = np.mean(x)
     sigma_sim = np.mean([(x[i]-mu_sim)**2 for i in range(nsim)])
     return sigma_sim
+
+def EffVar(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0: np.ndarray, k1: np.ndarray, mu: float, sigma: float, X: np.ndarray, W0: float) -> float:
+    sigma_sim = 0
+    return sigma_sim
