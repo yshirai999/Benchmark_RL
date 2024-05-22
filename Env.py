@@ -51,7 +51,7 @@ class BenchmarkReplication(gym.Env):
         if self.time == T-1:
             self.terminated = True
         
-        if self.W == 0:
+        if self.W <= 0:
             self.terminated = True
             self.truncated = True
 
