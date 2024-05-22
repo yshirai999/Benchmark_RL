@@ -2,7 +2,7 @@ import numpy as np
 from numpy.random import PCG64DXSM, Generator
 import scipy as sp
 from Pricers import BSprice, BGprice
-from MUFs import Var, EffVar
+from MUFs import Var, Welford_Var
 import gymnasium as gym
 from gymnasium.spaces import Box
 from typing import TYPE_CHECKING, Optional
@@ -75,7 +75,7 @@ class BenchmarkReplication(gym.Env):
                         + action[1][n]*max(k0[n] - S[0],0) \
                         + action[2][n]*max(k1[n] - S[1],0) \
                         + action[3][n]*max(S[1] - k1[n],0) 
-            self.reward = - Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
+            self.reward = - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
 
             self.time += 1
         
