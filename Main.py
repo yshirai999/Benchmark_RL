@@ -42,7 +42,7 @@ Benv.seed(seed=random.seed(10))
 env = gym.wrappers.TimeLimit(Benv, max_episode_steps=T)
 env = Monitor(env, allow_early_resets=True)
 
-steps = 50000
+steps = 200000
 
 path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO" # PATH to the BS_PPO_Models folder
 path = f"{path_folder}/BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}"
@@ -61,12 +61,13 @@ except:
                 tensorboard_log=f"{path_folder}/tensorboard/")
     model.learn(total_timesteps=steps, callback=eval_callback, log_interval = 100)
     model.save(f"{path}.zip")
+    # To open tensorboard window, run tensorboard --logdir C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO/tensorboard/PPO_1
 
 ##########################################
 ### Experiment
 ##########################################
 
-Nepisodes = 1000
+Nepisodes = 10000
 rew = []
 
 vec_env = model.get_env()
@@ -82,7 +83,7 @@ for i in range(Nepisodes):
             cont = False
             rew.append(reward)
 
-print(np.mean(rew))
+print(np.mean(rew),np.std(rew))
 
 
 
