@@ -14,6 +14,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.callbacks import EvalCallback
 from Loggers import TensorboardCallback
 import numpy as np
 import random
@@ -28,7 +29,7 @@ N = 10
 Nsim = 100
 Dynamics  = 'BS'
 star_time = 0
-T = 26
+T = 32
 dT = 1
 r = 0
 mu = [0.03,0.01]
@@ -38,22 +39,28 @@ Benv = BenchmarkReplication(W = W, N = N, Nsim = Nsim,
                              Dynamics = Dynamics, start_time = star_time,
                                T = T, dT = dT, r = r, mu = mu, sigma = sigma)
 Benv.seed(seed=random.seed(10))
+
 env = gym.wrappers.TimeLimit(Benv, max_episode_steps=T)
 env = Monitor(env, allow_early_resets=True)
 
-steps = 10000
+steps = 200000
 
 path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO" # PATH to the BS_PPO_Models folder
 path = f"{path_folder}/BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}"
+
+eval_callback = EvalCallback(env, best_model_save_path=path_folder,
+                             log_path=path_folder, eval_freq=500,
+                             deterministic=True, render=False)
+
 try:
     model = PPO.load(path, env = DummyVecEnv([lambda: env]), print_system_info=True)
 except:
     print("Training model...")
     if not os.path.exists(f"{path_folder}/tensorboard/"):
         os.makedirs(f"{path_folder}/tensorboard/")
-    model = PPO('MlpPolicy', DummyVecEnv([lambda: Benv]), learning_rate=0.001, verbose=1,
+    model = PPO('MlpPolicy', DummyVecEnv([lambda: env]), learning_rate=0.001, verbose=1,
                 tensorboard_log=f"{path_folder}/tensorboard/")
-    model.learn(total_timesteps=steps, callback=TensorboardCallback())
+    model.learn(total_timesteps=steps, callback=eval_callback, log_interval = 100)
     model.save(f"{path}.zip")
 
 ##########################################

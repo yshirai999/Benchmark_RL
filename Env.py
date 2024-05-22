@@ -48,42 +48,45 @@ class BenchmarkReplication(gym.Env):
         T = self.T
         N = self.N
 
-        if self.time == T-1:
-            self.terminated = True
+        S = self.ts[:][self.time]
+        kmin = [0.7*S[i] for i in range(len(S))]
+        kmax = [1.3*S[i] for i in range(len(S))]
+        k0 = np.linspace(kmin[0],kmax[0],N)
+        k1 = np.linspace(kmin[1],kmax[1],N)
+        if self.Dynamics == 'BS':
+            O = BSprice(S,k0,k1,self.r,self.dT,self.sigma)
+        else:
+            O = BGprice(S,k0,k1,self.r,self.dT,self.bp,self.cp,self.bn,self.cn)
+
+        Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[3][-1]*O[3][-1]
+        action[3][-1] = self.W - Cost
+
+        self.W = 0
+        for n in range(N):
+            self.W = self.W \
+                    + action[0][n]*max(S[0] - k0[n],0) \
+                    + action[1][n]*max(k0[n] - S[0],0) \
+                    + action[2][n]*max(k1[n] - S[1],0) \
+                    + action[3][n]*max(S[1] - k1[n],0) 
+        self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
+
+        self.time += 1
         
-        if self.W <= 0:
+        if self.time == T:
             self.terminated = True
             self.truncated = True
-
-        S = self.ts[:][self.time]
-        if not self.terminated:
-            kmin = [0.7*S[i] for i in range(len(S))]
-            kmax = [1.3*S[i] for i in range(len(S))]
-            k0 = np.linspace(kmin[0],kmax[0],N)
-            k1 = np.linspace(kmin[1],kmax[1],N)
-            if self.Dynamics == 'BS':
-                O = BSprice(S,k0,k1,self.r,self.dT,self.sigma)
-            else:
-                O = BGprice(S,k0,k1,self.r,self.dT,self.bp,self.cp,self.bn,self.cn)
-
-            Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[3][-1]*O[3][-1]
-            action[3][-1] = self.W - Cost
-
-            self.W = 0
-            for n in range(N):
-                self.W = self.W \
-                        + action[0][n]*max(S[0] - k0[n],0) \
-                        + action[1][n]*max(k0[n] - S[0],0) \
-                        + action[2][n]*max(k1[n] - S[1],0) \
-                        + action[3][n]*max(S[1] - k1[n],0) 
-            self.reward = - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
-
-            self.time += 1
+        # if self.W <= 0:
+        #     self.terminated = True
+        #     self.truncated = True
+        # print(self.time,self.terminated)
+        # if self.terminated:
+        #     print('TERMINATED')
         
-        info = {}
+        self.info = {'terminal_observation': [self.reward, self.time, self.terminated, self.truncated]}
         obs = np.array([[S[i]] for i in range(len(S))])
 
-        return obs, self.reward, self.terminated, self.truncated, info
+        #print(self.info)
+        return obs, self.reward, self.terminated, self.truncated, self.info
         
     def reset(
         self,
@@ -110,9 +113,7 @@ class BenchmarkReplication(gym.Env):
         self.terminated = False
         self.truncated = False
 
-        info = {}
-
-        return obs, info
+        return obs, {}
 
     def render(self):
         pass
