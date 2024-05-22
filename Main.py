@@ -32,7 +32,7 @@ T = 32
 dT = 1
 r = 0
 mu = [0.03,0.01]
-sigma = [0.03,0.01]
+sigma = [0.3,0.1]
 
 Benv = BenchmarkReplication(N = N, Nsim = Nsim,
                              Dynamics = Dynamics, start_time = star_time,
@@ -42,7 +42,7 @@ Benv.seed(seed=random.seed(10))
 env = gym.wrappers.TimeLimit(Benv, max_episode_steps=T)
 env = Monitor(env, allow_early_resets=True)
 
-steps = 200000
+steps = 50000
 
 path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO" # PATH to the BS_PPO_Models folder
 path = f"{path_folder}/BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}"

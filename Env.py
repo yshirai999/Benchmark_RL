@@ -55,11 +55,11 @@ class BenchmarkReplication(gym.Env):
             O = BSprice(S,k0,k1,self.r,self.dT,self.sigma)
         else:
             O = BGprice(S,k0,k1,self.r,self.dT,self.bp,self.cp,self.bn,self.cn)
+        
+        Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[1][int(N/2)]*O[1][int(N/2)]
+        action[1][int(N/2)] = - Cost/O[1][int(N/2)]
 
-        Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[3][-1]*O[3][-1]
-        action[3][-1] = - Cost/O[3][-1]
-
-        self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
+        self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X)
 
         self.time += 1
         
