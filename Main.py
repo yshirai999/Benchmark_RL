@@ -39,8 +39,8 @@ Benv.seed(seed=random.seed(10))
 
 steps = 200000
 
-path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models" # PATH to the BS_PPO_Models folder
-path = f"{path_folder}_{str(steps)}_{str(sigma[0]*100)}_{str(sigma[1]*100)}"
+path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO" # PATH to the BS_PPO_Models folder
+path = f"{path_folder}/BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}"
 try:
     model = PPO.load(path, env = DummyVecEnv([lambda: Benv]), print_system_info=True)
 except:
@@ -49,7 +49,7 @@ except:
     model.learn(total_timesteps=steps)
     if not os.path.exists(path_folder):
         os.makedirs(path_folder)
-    model.save(path)
+    model.save(f"{path}.zip")
 
 ##########################################
 ### Experiment
