@@ -52,10 +52,11 @@ class BenchmarkReplication(gym.Env):
             self.terminated = True
         
         if self.W == 0:
+            self.terminated = True
             self.truncated = True
 
-        if not all([self.terminated, self.truncated]):
-            S = self.ts[:][self.time]
+        S = self.ts[:][self.time]
+        if not self.terminated:
             kmin = [0.7*S[i] for i in range(len(S))]
             kmax = [1.3*S[i] for i in range(len(S))]
             k0 = np.linspace(kmin[0],kmax[0],N)
