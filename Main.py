@@ -24,7 +24,6 @@ import os
 ### Train/load model
 ##########################################
 
-W = 1
 N = 10
 Nsim = 100
 Dynamics  = 'BS'
@@ -35,7 +34,7 @@ r = 0
 mu = [0.03,0.01]
 sigma = [0.03,0.01]
 
-Benv = BenchmarkReplication(W = W, N = N, Nsim = Nsim,
+Benv = BenchmarkReplication(N = N, Nsim = Nsim,
                              Dynamics = Dynamics, start_time = star_time,
                                T = T, dT = dT, r = r, mu = mu, sigma = sigma)
 Benv.seed(seed=random.seed(10))

@@ -9,14 +9,12 @@ from typing import TYPE_CHECKING, Optional
 
 class BenchmarkReplication(gym.Env):
 
-    def __init__(self, W: float = 100, N: int = 10, Nsim: int = 100, Dynamics: str = 'BS', start_time: float = 0, T: float = 0.5, dT: float = 0.5/52, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
+    def __init__(self, N: int = 10, Nsim: int = 100, Dynamics: str = 'BS', start_time: float = 0, T: float = 0.5, dT: float = 0.5/52, r: float = 0, mu: list[float] = [0.03,0.01], sigma: list[float] = [0.3, 0.2]):
         self.start_time = start_time
         self.T = T
         self.dT = dT
         self.r = r
         
-        self.W0 = W # Initial Wealth
-        self.W = W # Current Wealth
         self.N = N # There are N calls and N put options for each underlying. Then the player needs to make 4N-1 decisions.
         
         self.Dynamics = Dynamics
@@ -59,15 +57,8 @@ class BenchmarkReplication(gym.Env):
             O = BGprice(S,k0,k1,self.r,self.dT,self.bp,self.cp,self.bn,self.cn)
 
         Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[3][-1]*O[3][-1]
-        action[3][-1] = self.W - Cost
+        action[3][-1] = - Cost/O[3][-1]
 
-        self.W = 0
-        for n in range(N):
-            self.W = self.W \
-                    + action[0][n]*max(S[0] - k0[n],0) \
-                    + action[1][n]*max(k0[n] - S[0],0) \
-                    + action[2][n]*max(k1[n] - S[1],0) \
-                    + action[3][n]*max(S[1] - k1[n],0) 
         self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X,self.W0)
 
         self.time += 1
@@ -75,17 +66,10 @@ class BenchmarkReplication(gym.Env):
         if self.time == T:
             self.terminated = True
             self.truncated = True
-        # if self.W <= 0:
-        #     self.terminated = True
-        #     self.truncated = True
-        # print(self.time,self.terminated)
-        # if self.terminated:
-        #     print('TERMINATED')
         
         self.info = {'terminal_observation': [self.reward, self.time, self.terminated, self.truncated]}
         obs = np.array([[S[i]] for i in range(len(S))])
 
-        #print(self.info)
         return obs, self.reward, self.terminated, self.truncated, self.info
         
     def reset(
@@ -97,7 +81,6 @@ class BenchmarkReplication(gym.Env):
         N = self.N
         self.time = self.start_time # the current time is zero
         self.p = np.zeros(N)
-        self.W = self.W0 # the initial cash
         self.reward = 0
         self.p = np.zeros(4*N) # current position in each option
         
