@@ -21,22 +21,34 @@ import os
 ### Train/load model
 ##########################################
 
-Benv = BenchmarkReplication(W = 1, N = 10, Nsim = 100, Dynamics = 'BS', start_time = 0, T = 26, dT = 1, r = 0, mu = [0.03,0.01], sigma = [0.3, 0.2])
+W = 1
+N = 10
+Nsim = 100
+Dynamics  = 'BS'
+star_time = 0
+T = 26
+dT = 1
+r = 0
+mu = [0.03,0.01]
+sigma = [0.03,0.01]
+
+Benv = BenchmarkReplication(W = W, N = N, Nsim = Nsim,
+                             Dynamics = Dynamics, start_time = star_time,
+                               T = T, dT = dT, r = r, mu = mu, sigma = sigma)
 Benv.seed(seed=random.seed(10))
 
 steps = 200000
 
+path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models" # PATH to the BS_PPO_Models folder
+path = f"{path_folder}_{str(steps)}_{str(sigma[0]*100)}_{str(sigma[1]*100)}"
 try:
-    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models/BS_PPO_{str(steps)}"
     model = PPO.load(path, env = DummyVecEnv([lambda: Benv]), print_system_info=True)
 except:
     print("Training model...")
     model = PPO('MlpPolicy', DummyVecEnv([lambda: Benv]), learning_rate=0.001, verbose=1)
     model.learn(total_timesteps=steps)
-    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models" # PATH to the BS_PPO_Models folder
-    if not os.path.exists(path):
-        os.makedirs(path)
-    path = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO_Models/BS_PPO_{str(steps)}" # PATH to the model
+    if not os.path.exists(path_folder):
+        os.makedirs(path_folder)
     model.save(path)
 
 ##########################################
