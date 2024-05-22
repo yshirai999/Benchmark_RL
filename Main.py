@@ -37,7 +37,7 @@ Benv = BenchmarkReplication(W = W, N = N, Nsim = Nsim,
                                T = T, dT = dT, r = r, mu = mu, sigma = sigma)
 Benv.seed(seed=random.seed(10))
 
-steps = 200000
+steps = 2000
 
 path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO" # PATH to the BS_PPO_Models folder
 path = f"{path_folder}/BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}"
@@ -45,10 +45,11 @@ try:
     model = PPO.load(path, env = DummyVecEnv([lambda: Benv]), print_system_info=True)
 except:
     print("Training model...")
-    model = PPO('MlpPolicy', DummyVecEnv([lambda: Benv]), learning_rate=0.001, verbose=1)
+    if not os.path.exists(f"{path_folder}/tensorboard/"):
+        os.makedirs(f"{path_folder}/tensorboard/")
+    model = PPO('MlpPolicy', DummyVecEnv([lambda: Benv]), learning_rate=0.001, verbose=1,
+                tensorboard_log=f"{path_folder}/tensorboard/")
     model.learn(total_timesteps=steps)
-    if not os.path.exists(path_folder):
-        os.makedirs(path_folder)
     model.save(f"{path}.zip")
 
 ##########################################
