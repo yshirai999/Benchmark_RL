@@ -4,10 +4,11 @@
 - We consider a continuous time application of Financial Finance, according to which:
   - Investors preferences are represented by a monetary utility function, that is:
     - They maximize the worst case scenario expected future cash flow
-    - Scenarios are defined by distorting an estimated probability measure $\mathbb{P}$, which represents the base case scenario
+    - Scenarios are defined by distorting a probability measure $\mathbb{P}$ that represents the base case scenario, and is estimated from historical observations
     - Rebates are offered for less likely, but still not impossible scenarios
     - The idea is that, at least in the short term, the set of scenarios may substantially deviate from $\mathbb{P}$, but not too much, so a decision can still be made
   - There is no budget constraint, as short selling is allowed
+  - Risk neutral and statistical measure are not equivalent - arbitrages may exist when trading continuously, which is however physically impossible
 
 - In this experiment, the goal is to *outperform* a benchmark composed of SPY and XLE using options on SPY/XLE
   - All options maturities is assumed to be the same, say 1 week, or 1 day, and such period represents the length of the time step
