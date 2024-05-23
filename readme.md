@@ -48,7 +48,7 @@
 
 - The folder ``BenchEnv`` contains the conda environment needed to run files in this repo
 
-- To check import libraries, you may run the following code
+- To check imported libraries, you may run the following code
 
 ```bash
 from distutils.sysconfig import get_python_lib
