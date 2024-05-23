@@ -19,6 +19,9 @@ from Loggers import TensorboardCallback
 import numpy as np
 import random
 import os
+import matplotlib.pyplot as plt
+from matplotlib import colors
+from matplotlib.ticker import PercentFormatter
 
 ##########################################
 ### Train/load model
@@ -82,6 +85,11 @@ for i in range(Nepisodes):
         if any([terminated,truncated]):
             cont = False
             rew.append(reward)
+
+fig = plt.figure()
+fig.hist(rew, bins=10)
+plt.savefig(path)
+plt.show()
 
 print(np.mean(rew),np.std(rew))
 
