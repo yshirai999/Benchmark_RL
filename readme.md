@@ -36,7 +36,7 @@
   
 - To overcome this issue, we proceed as follows:
   - We construct clusters of histortically observed $\mathbb{P}$, and train a team of lower level agents, each of which specialized in one such $\mathbb{P}$
-  - A higher level agent then decides which low level agent should be used at each time step
+  - A higher level agent then decides which mixture of low level agents should be used at each time step
 
 - Some open questions:
   - We need to check the literature on HRL - obviously applications of HRL to inflation risk and Financial Finance in particular are yet to be explored, but we want to make sure we are not doing exactly the same thing as someone else
