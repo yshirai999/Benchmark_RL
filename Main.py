@@ -42,7 +42,7 @@ Benv.seed(seed=random.seed(10))
 env = gym.wrappers.TimeLimit(Benv, max_episode_steps=T)
 env = Monitor(env, allow_early_resets=True)
 
-steps = 200000
+steps = 400000
 
 path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO" # PATH to the BS_PPO_Models folder
 path = f"{path_folder}/BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}"
@@ -84,6 +84,10 @@ for i in range(Nepisodes):
             rew.append(reward)
 
 print(np.mean(rew),np.std(rew))
+
+# steps = 2e4 -> (-23683.48 31097.854)
+# steps = 2e5 -> (-23495.852, 29843.576)
+
 
 
 
