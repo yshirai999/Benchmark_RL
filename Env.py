@@ -65,13 +65,13 @@ class BenchmarkReplication(gym.Env):
             Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[1][int(N/2)]*O[1][int(N/2)]
             action[1][int(N/2)] = - Cost/O[1][int(N/2)]
 
-            self.reward += Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X)
+            self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X)
 
             self.time += 1
 
             Snext = self.ts[:][self.time]
             
-            xi = (Snext[0]**2+Snext[1]**2)/(Snext[0]+Snext[1])#-(S[0]**2+S[1]**2)/(S[0]+S[1])
+            xi = (Snext[0]**2+Snext[1]**2)/(Snext[0]+Snext[1])-(S[0]**2+S[1]**2)/(S[0]+S[1])
 
             self.Pi.append(sum([(action[0][n]*max(Snext[0]-k0[n],0)+action[1][n]*max(k0[n]-Snext[0],0)) for n in range(N)])-xi) # actual result from the strategy
 
