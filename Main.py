@@ -88,15 +88,14 @@ for i in range(Nepisodes):
         if any([terminated,truncated]):
             cont = False
             Pi.append(Benv.Pi)
-            #print(vec_env.unwrapped.get_attr('Pi')[0])
             rew.append(reward)
 
 # Visualization
-M = int(T/dT)-1
+M = int(T/dT)
 n = min(100,Nepisodes)
 Pi = np.array(random.sample(Pi,n)).T
 
-time = np.linspace(0,T,M)
+time = np.linspace(0,T,M)/dT
 tt = np.full(shape=(n,M), fill_value=time).T
 fig = plt.figure()
 plt.plot(tt,Pi)

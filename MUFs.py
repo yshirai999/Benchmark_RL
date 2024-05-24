@@ -12,8 +12,8 @@ def Var(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0: np.ndar
         xn = xn + sum([(a[2][n]*max(Snew[1]-k1[n],0)+a[3][n]*max(k1[n]-Snew[1],0)) for n in range(N)])
         x.append(xn)
     mu_sim = np.mean(x)
-    sigma_sim = np.mean([(x[i]-mu_sim)**2 for i in range(nsim)])
-    return sigma_sim
+    sigma_sim = np.mean([(x[i]-mu_sim)**2 for i in range(Nsim)])
+    return mu_sim - sigma_sim
 
 def Welford_Var(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0: np.ndarray, k1: np.ndarray, mu: float, sigma: float, X: np.ndarray) -> float:
     mu = [mu[i]*dT for i in range(len(mu))]
@@ -34,9 +34,8 @@ def Welford_Var(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0:
         mean += delta/count
         delta2 = xn-mean
         M2 += delta * delta2
-        
     sigma_sim = M2/count
-    return sigma_sim
+    return mu_sim - sigma_sim
 
 def Naive_Var(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0: np.ndarray, k1: np.ndarray, mu: float, sigma: float, X: np.ndarray) -> float:
     mu = [mu[i]*dT for i in range(len(mu))]
@@ -51,6 +50,7 @@ def Naive_Var(S: list[float], dT: float, a: np.ndarray, N: int, Nsim: int, k0: n
         xn = xn + sum([(a[2][n]*max(Snew[1]-k1[n],0)+a[3][n]*max(k1[n]-Snew[1],0)) for n in range(N)])
         x.append(xn)
     sum_x  = np.sum(x)
-    sumsq = np.sum(x[i]**2 for i in range(nsim))
+    mu_sim = sum_x/Nsim
+    sumsq = np.sum(x[i]**2 for i in range(Nsim))
     sigma_sim = (sumsq-(sum_x**2)/count)/count
-    return sigma_sim
+    return mu_sim-sigma_sim

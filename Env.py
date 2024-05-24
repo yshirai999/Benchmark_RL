@@ -27,7 +27,7 @@ class BenchmarkReplication(gym.Env):
         self.cp = [0.1,0.1]
         self.cn = [0.05,0.05]
 
-        self.Pi = [] # Portfolio value
+        self.Pi = [0] # Portfolio value
 
         self.action_space = Box(low = -100, high = 100, shape = (4,N))
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
@@ -97,7 +97,7 @@ class BenchmarkReplication(gym.Env):
         self.p = np.zeros(N)
         self.reward = 0
         self.p = np.zeros(4*N) # current position in each option
-        self.Pi = []
+        self.Pi = [0]
         mu = self.mu
         sigma = self.sigma
         
