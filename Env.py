@@ -50,7 +50,7 @@ class BenchmarkReplication(gym.Env):
 
         S = self.ts[:][self.time]
 
-        if self.time < T:
+        if self.time < T-1:
             kmin = [0.7*S[i] for i in range(len(S))]
             kmax = [1.3*S[i] for i in range(len(S))]
             k0 = np.linspace(kmin[0],kmax[0],N)
@@ -73,7 +73,7 @@ class BenchmarkReplication(gym.Env):
 
             self.Pi.append(sum([(action[0][n]*max(Snext[0]-k0[n],0)+action[1][n]*max(k0[n]-Snext[0],0)) for n in range(N)])-xi) # actual result from the strategy
         
-        if self.time == T:
+        if self.time == T-1:
             self.terminated = True
             self.truncated = True
            
