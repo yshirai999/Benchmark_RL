@@ -29,8 +29,8 @@ N = 10
 Nsim = 100
 Dynamics  = 'BS'
 star_time = 0
-T = 26
-dT = 1
+T = 0.5
+dT = 1/52
 r = 0
 mu = [0.03,0.01]
 sigma = [0.3,0.1]
@@ -68,31 +68,36 @@ except:
 ### Experiment
 ##########################################
 
-Nepisodes = 10000
+Nepisodes = 10
 rew = []
 Pi = []
 
 vec_env = model.get_env()
 for i in range(Nepisodes):
-    obs = vec_env.reset()
+    obs = Benv.reset()
+    obs = [[obs[0][i] for i in range(len(obs[0]))]]
     cont = True
     i = 0
     while cont:
-        action = model.predict(obs)
-        obs, reward, terminated, truncated = vec_env.step(action[0])
+        action, _states = model.predict(obs, deterministic = True)
+        if len(action) == 1: 
+            obs, reward, terminated, truncated, info = Benv.step(action[0])
+        else:
+            obs, reward, terminated, truncated, info = Benv.step(action)
         i += 1
         if any([terminated,truncated]):
             cont = False
-            xi = (obs[0]**2+obs[1]**2)/(obs[0]+obs[1])-(vec_env.S0[0]**2+vec_env.S0[1]**2)/(vec_env.S0[0]+vec_env.S0[1])
-            Pi.append(vec_env.Pi)
+            Pi.append(Benv.Pi)
+            #print(vec_env.unwrapped.get_attr('Pi')[0])
             rew.append(reward)
 
 # Visualization
-n = int(T/dT)
-M = min(100,Nepisodes)
-Pi = random.sample(Pi,M)
-time = np.linspace(0,T,int(T/dT))
-tt = np.full(shape=(M,n+1), fill_value=time).T
+M = int(T/dT)-1
+n = min(100,Nepisodes)
+Pi = np.array(random.sample(Pi,n)).T
+
+time = np.linspace(0,T,M)
+tt = np.full(shape=(n,M), fill_value=time).T
 fig = plt.figure()
 plt.plot(tt,Pi)
 if not os.path.exists(f"{path_folder}/plots/"):
