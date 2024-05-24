@@ -26,6 +26,8 @@ class BenchmarkReplication(gym.Env):
         self.cp = [0.1,0.1]
         self.cn = [0.05,0.05]
 
+        self.Pi = [] # Portfolio value
+
         self.action_space = Box(low = -100, high = 100, shape = (4,N))
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
         self.observation_space = self.observation_space[0]
@@ -47,25 +49,34 @@ class BenchmarkReplication(gym.Env):
         N = self.N
 
         S = self.ts[:][self.time]
-        kmin = [0.7*S[i] for i in range(len(S))]
-        kmax = [1.3*S[i] for i in range(len(S))]
-        k0 = np.linspace(kmin[0],kmax[0],N)
-        k1 = np.linspace(kmin[1],kmax[1],N)
-        if self.Dynamics == 'BS':
-            O = BSprice(S,k0,k1,self.r,self.dT,self.sigma)
-        else:
-            O = BGprice(S,k0,k1,self.r,self.dT,self.bp,self.cp,self.bn,self.cn)
-        
-        Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[1][int(N/2)]*O[1][int(N/2)]
-        action[1][int(N/2)] = - Cost/O[1][int(N/2)]
 
-        self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X)
+        if self.time < T:
+            kmin = [0.7*S[i] for i in range(len(S))]
+            kmax = [1.3*S[i] for i in range(len(S))]
+            k0 = np.linspace(kmin[0],kmax[0],N)
+            k1 = np.linspace(kmin[1],kmax[1],N)
+            if self.Dynamics == 'BS':
+                O = BSprice(S,k0,k1,self.r,self.dT,self.sigma)
+            else:
+                O = BGprice(S,k0,k1,self.r,self.dT,self.bp,self.cp,self.bn,self.cn)
+            
+            Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[1][int(N/2)]*O[1][int(N/2)]
+            action[1][int(N/2)] = - Cost/O[1][int(N/2)]
 
-        self.time += 1
+            self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X)
+
+            self.time += 1
+
+            Snext = self.ts[:][self.time]
+
+            xi = (Snext[0]**2+Snext[1]**2)/(Snext[0]+Snext[1])-(S[0]**2+S[1]**2)/(S[0]+S[1])
+
+            self.Pi.append(sum([(action[0][n]*max(Snext[0]-k0[n],0)+action[1][n]*max(k0[n]-Snext[0],0)) for n in range(N)])-xi) # actual result from the strategy
         
         if self.time == T:
             self.terminated = True
             self.truncated = True
+           
         
         self.info = {'terminal_observation': [self.reward, self.time, self.terminated, self.truncated]}
         obs = np.array([[S[i]] for i in range(len(S))])

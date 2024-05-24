@@ -20,8 +20,6 @@ import numpy as np
 import random
 import os
 import matplotlib.pyplot as plt
-from matplotlib import colors
-from matplotlib.ticker import PercentFormatter
 
 ##########################################
 ### Train/load model
@@ -45,7 +43,7 @@ Benv.seed(seed=random.seed(10))
 env = gym.wrappers.TimeLimit(Benv, max_episode_steps=T)
 env = Monitor(env, allow_early_resets=True)
 
-steps = 400000
+steps = 10000
 
 path_folder = f"C:/Users/yoshi/OneDrive/Desktop/Research/Benchmark_RL/BS_PPO" # PATH to the BS_PPO_Models folder
 path = f"{path_folder}/BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}"
@@ -72,6 +70,7 @@ except:
 
 Nepisodes = 10000
 rew = []
+Pi = []
 
 vec_env = model.get_env()
 for i in range(Nepisodes):
@@ -84,11 +83,21 @@ for i in range(Nepisodes):
         i += 1
         if any([terminated,truncated]):
             cont = False
+            xi = (obs[0]**2+obs[1]**2)/(obs[0]+obs[1])-(vec_env.S0[0]**2+vec_env.S0[1]**2)/(vec_env.S0[0]+vec_env.S0[1])
+            Pi.append(vec_env.Pi)
             rew.append(reward)
 
+# Visualization
+n = int(T/dT)
+M = min(100,Nepisodes)
+Pi = random.sample(Pi,M)
+time = np.linspace(0,T,int(T/dT))
+tt = np.full(shape=(M,n+1), fill_value=time).T
 fig = plt.figure()
-fig.hist(rew, bins=10)
-plt.savefig(path)
+plt.plot(tt,Pi)
+if not os.path.exists(f"{path_folder}/plots/"):
+        os.makedirs(f"{path_folder}/plots/")
+plt.savefig(f"{path_folder}/plots//BS_PPO_{str(steps)}_{str(int(sigma[0]*100))}{str(int(sigma[1]*100))}")
 plt.show()
 
 print(np.mean(rew),np.std(rew))

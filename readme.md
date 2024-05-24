@@ -7,7 +7,7 @@
     - Scenarios are defined by distorting a probability measure $\mathbb{P}$ that represents the base case scenario, and is estimated from historical observations
     - Rebates are offered for less likely, but still not impossible scenarios
     - The idea is that, at least in the short term, the set of scenarios may substantially deviate from $\mathbb{P}$, but not too much, so a decision can still be made
-  - There is no budget constraint, as short selling is allowed
+  - There is no budget constraint, as short selling is allowed.
   - Risk neutral and statistical measure are not equivalent - arbitrages may exist when trading continuously, which is however physically impossible
 
 - In this experiment, the goal is to *outperform* a benchmark composed of SPY and XLE using options on SPY/XLE
