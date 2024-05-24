@@ -65,7 +65,7 @@ class BenchmarkReplication(gym.Env):
             Cost = sum([np.dot(action[i],O[i]) for i in range(4)]) - action[1][int(N/2)]*O[1][int(N/2)]
             action[1][int(N/2)] = - Cost/O[1][int(N/2)]
 
-            self.reward += - Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X)
+            self.reward += Welford_Var(S,self.dT,action,N,self.Nsim,k0,k1,self.mu,self.sigma,self.X)
 
             self.time += 1
 
