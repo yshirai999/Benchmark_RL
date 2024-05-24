@@ -68,7 +68,7 @@ except:
 ### Experiment
 ##########################################
 
-Nepisodes = 100
+Nepisodes = 25
 rew = []
 Pi = []
 
