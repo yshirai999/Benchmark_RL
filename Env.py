@@ -27,7 +27,7 @@ class BenchmarkReplication(gym.Env):
         self.cp = [0.1,0.1]
         self.cn = [0.05,0.05]
 
-        self.Pi = [0] # Portfolio value
+        self.Pi = [] # Portfolio value
 
         self.action_space = Box(low = -100, high = 100, shape = (4,N))
         self.observation_space = Box(low = 0, high = 10000, shape = (2,1), dtype = np.float64), # current prices of 2 underlying assets
@@ -71,7 +71,7 @@ class BenchmarkReplication(gym.Env):
 
             Snext = self.ts[:][self.time]
             
-            xi = (Snext[0]**2+Snext[1]**2)/(Snext[0]+Snext[1])-(S[0]**2+S[1]**2)/(S[0]+S[1])
+            xi = (Snext[0]**2+Snext[1]**2)/(Snext[0]+Snext[1])#-(S[0]**2+S[1]**2)/(S[0]+S[1])
 
             self.Pi.append(sum([(action[0][n]*max(Snext[0]-k0[n],0)+action[1][n]*max(k0[n]-Snext[0],0)) for n in range(N)])-xi) # actual result from the strategy
 
@@ -97,7 +97,7 @@ class BenchmarkReplication(gym.Env):
         self.p = np.zeros(N)
         self.reward = 0
         self.p = np.zeros(4*N) # current position in each option
-        self.Pi = [0]
+        self.Pi = []
         mu = self.mu
         sigma = self.sigma
         

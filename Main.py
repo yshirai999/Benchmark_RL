@@ -68,7 +68,7 @@ except:
 ### Experiment
 ##########################################
 
-Nepisodes = 10
+Nepisodes = 100
 rew = []
 Pi = []
 
@@ -91,7 +91,7 @@ for i in range(Nepisodes):
             rew.append(reward)
 
 # Visualization
-M = int(T/dT)
+M = int(T/dT)-1
 n = min(100,Nepisodes)
 Pi = np.array(random.sample(Pi,n)).T
 
