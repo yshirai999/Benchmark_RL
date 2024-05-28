@@ -106,11 +106,5 @@ plt.show()
 
 print(np.mean(rew),np.std(rew))
 
-# Training seems slow:
-# steps = 2e4 -> (-23683.48 31097.854)
-# steps = 2e5 -> (-23495.852, 29843.576)
-# steps = 4e5 -> (-24342.842 32042.281)
-# Need better NN for actor/critic policy
-
 
 
