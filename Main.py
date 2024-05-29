@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 ### Train/load model
 ##########################################
 
-N = 10
+N = 15
 Nsim = 100
 Dynamics  = 'BS'
 star_time = 0
