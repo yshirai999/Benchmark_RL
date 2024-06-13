@@ -50,7 +50,7 @@ class BenchmarkReplication(gym.Env):
         M = self.M
         N = self.N
 
-        S = self.ts[:][self.time]
+        S = self.ts[:][self.time]   
 
         if self.time < M-1:
             kmin = [0.7*S[i] for i in range(len(S))]
