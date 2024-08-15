@@ -1,5 +1,5 @@
 
-# Hedging Inflation Risk in Continuous Time Financial Finance: a Hierarchical Reinforcement Learning Approach
+# Optimal Derivative positioning via Hierarchical Reinforcement Learning
 
 - We consider a continuous time application of Financial Finance, according to which:
   - Investors preferences are represented by a monetary utility function, that is:
