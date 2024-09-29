@@ -1,7 +1,7 @@
 
 # Optimal Derivative positioning via Hierarchical Reinforcement Learning
 
-- We consider a continuous time application of Financial Finance, according to which:
+- Suppose that:
   - Investors preferences are represented by a monetary utility function, that is:
     - They maximize the worst case scenario expected future cash flow
     - Scenarios are defined by distorting a probability measure $\mathbb{P}$ that represents the base case scenario, and is estimated from historical observations
