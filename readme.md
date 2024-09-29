@@ -20,7 +20,7 @@
   - Chopra, *Reinforcement Learning Methods for Conic Finance*, PhD Thesis, 2020
   - Hirsa et al. *Deep Reinforcement learning on a multi-asset environment for trading*, arxiv, 2021
     - This last work is particularly interesting as it shows that performance of Reinforcement Learning agents trained on real data is not satisfactory due to:
-      - nonstationarity of time series 
+      - nonstationarity of time series
       - lack of data
 
 # Info about this repo
