@@ -1,0 +1,25 @@
+name: BenchEnv
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - scipy
+  - scikit-learn
+  - gym
+  - stable-baselines3
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.3  # Adjust based on your GPU and CUDA version
+  - jupyterlab
+  - tqdm
+  - pip
+  - pip:
+      - gym[atari,box2d]  # Additional gym environments
+      - tensorboard
+      - opencv-python
