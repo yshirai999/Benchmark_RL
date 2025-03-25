@@ -87,7 +87,8 @@ class BenchmarkReplication(gym.Env):
     def reset(
         self,
         *,
-        seed: Optional[int] = None
+        seed: Optional[int] = None,
+        options = None
     ):
         T = self.T
         dT = self.dT
